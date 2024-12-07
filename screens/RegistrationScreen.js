@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,Image } from 'react-native';
 
 const RegistrationScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -24,6 +24,13 @@ const RegistrationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/Travel App or Website Logo.png')}  // Adjust the path to your logo
+          style={styles.logo}
+        />
+      </View>
+
       <Text style={styles.title}>Username</Text>
       <TextInput
         style={styles.input}
@@ -68,6 +75,15 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#0bded3',
   },
+  logoContainer: {
+    alignItems: 'center',  // Horizontally center the logo
+    marginBottom: 25,  // Space between logo and inputs
+  },
+  logo: {
+    width: 200,  // Set the width of the logo
+    height: 200, // Set the height of the logo
+  },
+
   title: {
     fontSize: 18,
     fontWeight: '500',
