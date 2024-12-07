@@ -1,30 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
-const RegistrationScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = () => {
-    if (!username.trim() || !password.trim() || !confirmPassword.trim()) {
-      Alert.alert('Error', 'Please fill in all fields.');
+  const handleLogin = () => {
+    if (!username.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please enter both username and password.');
       return;
     }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
-      return;
-    }
-
-    // Simulate successful registration
-    Alert.alert('Success', 'Registration successful!');
-    navigation.navigate('Login');  // Redirect to the Login screen after successful registration
+    // Here, you would normally check credentials against a backend API
+    // For now, we're just passing the username to the Home screen
+    navigation.navigate('Home', { username });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Login</Text>
       
       <TextInput
         style={styles.input}
@@ -40,22 +34,14 @@ const RegistrationScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
 
-      <Button title="Register" onPress={handleRegister} />
+      <Button title="Login" onPress={handleLogin} />
       
       <Text
         style={styles.link}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('Register')}
       >
-        Already have an account? Login
+        Don't have an account? Register
       </Text>
     </View>
   );
@@ -88,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;
