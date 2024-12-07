@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 const RegistrationScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -24,15 +24,14 @@ const RegistrationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      
+      <Text style={styles.title}>Username</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
-      
+      <Text style={styles.title}>Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -40,7 +39,7 @@ const RegistrationScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
-      
+      <Text style={styles.title}>Confirm Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
@@ -48,8 +47,9 @@ const RegistrationScreen = ({ navigation }) => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-
-      <Button title="Register" onPress={handleRegister} />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
       
       <Text
         style={styles.link}
@@ -66,25 +66,46 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#0bded3',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginLeft:5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    fontSize: 15,
+    backgroundColor:'#F5F5F5',
+    borderWidth: 2,
+    borderColor: '#999797',
     padding: 10,
     marginBottom: 20,
-    borderRadius: 5,
+    borderRadius: 10,
   },
+  button: {
+    backgroundColor: '#6b6c6e',  // Set your preferred button color
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#F5F5F5',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: '#F5F5F5',  // Text color
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
   link: {
     color: 'blue',
     textAlign: 'center',
     marginTop: 10,
+    fontSize: 16,
+
   },
 });
 
