@@ -34,20 +34,20 @@ const LoginScreen = ({ navigation }) => {
       />
 
       <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry={!showPassword} // Conditionally hide password
-                value={password}
-                onChangeText={setPassword}
-              />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)} // Toggle password visibility
-              >
-                <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#999797" />
-              </TouchableOpacity>
-            </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity
+          style={styles.eyeIcon}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#999797" />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 15,
-    width:'100%',
+    width: '100%',
     backgroundColor: '#F5F5F5',
     borderWidth: 2,
     borderColor: '#999797',
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   eyeIcon: {
     position: 'absolute',
     right: 10,
-    top:10
+    top: 10
   },
   link: {
     color: 'blue',
