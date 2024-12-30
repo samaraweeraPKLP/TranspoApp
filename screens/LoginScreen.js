@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     if (!username.trim() || !password.trim()) {
@@ -31,13 +33,21 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setUsername}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={!showPassword} // Conditionally hide password
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)} // Toggle password visibility
+              >
+                <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#999797" />
+              </TouchableOpacity>
+            </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
@@ -77,12 +87,23 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 15,
+    width:'100%',
     backgroundColor: '#F5F5F5',
     borderWidth: 2,
     borderColor: '#999797',
     padding: 10,
     marginBottom: 20,
     borderRadius: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top:10
   },
   link: {
     color: 'blue',

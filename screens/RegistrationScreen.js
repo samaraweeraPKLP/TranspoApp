@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const RegistrationScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setConfirmPasswordShowPassword] = useState(false);
+
 
   const handleRegister = () => {
     if (!username.trim() || !password.trim() || !confirmPassword.trim()) {
@@ -38,21 +42,39 @@ const RegistrationScreen = ({ navigation }) => {
         onChangeText={setUsername}
       />
       <Text style={styles.title}>Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <View style={styles.passwordContainer}>
+      
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={!showPassword} // Conditionally hide password
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)} // Toggle password visibility
+              >
+                <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#999797" />
+              </TouchableOpacity>
+            </View>
       <Text style={styles.title}>Confirm Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <View style={styles.passwordContainer}>
+      
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                secureTextEntry={!showConfirmPassword} // Conditionally hide password
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setConfirmPasswordShowPassword(!showConfirmPassword)} // Toggle password visibility
+              >
+                <Icon name={showConfirmPassword ? 'eye-slash' : 'eye'} size={20} color="#999797" />
+              </TouchableOpacity>
+            </View>
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
@@ -91,12 +113,23 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 15,
+    width:'100%',
     backgroundColor: '#F5F5F5',
     borderWidth: 2,
     borderColor: '#999797',
     padding: 10,
     marginBottom: 20,
     borderRadius: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top:10
   },
   button: {
     backgroundColor: '#6b6c6e',
