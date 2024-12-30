@@ -18,7 +18,7 @@ const BookingScreen = ({ route, navigation }) => {
     }
 
     const totalCost = calculateTotalCost();
-    alert(`Booking successful!\n${passengerName} has booked ${selectedSeats} seat(s)\nTotal cost: $${totalCost}`);
+    alert(`Booking successful!\n${passengerName} has booked ${selectedSeats} seat(s)\nTotal cost: Rs.${totalCost}`);
     navigation.goBack();
   };
 
