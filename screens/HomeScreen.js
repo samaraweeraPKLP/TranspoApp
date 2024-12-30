@@ -1,115 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
 
 const HomeScreen = ({ route, navigation }) => {
-  const { username } = route.params || {};  // Retrieve the username passed from the Login Screen
-  const [items, setItems] = useState([]);  // List of transportation items
-  const [clickCount, setClickCount] = useState(0);  // Count of clicked items
+  const { username = 'Guest' } = route.params || {}; // Provide default 'Guest' if no username is passed
+  const [buses, setBuses] = useState([]);
+  const [filteredBuses, setFilteredBuses] = useState([]);
+  const [selectedBuses, setSelectedBuses] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState('');
+  const [destination, setDestination] = useState('');
 
-  // Simulate fetching transportation data (you can replace this with an actual API call)
   useEffect(() => {
-    const mockItems = [
-      { id: '1', title: 'Bus Route A', description: 'Route from City A to City B', status: 'Available' },
-      { id: '2', title: 'Train Route B', description: 'Route from City X to City Y', status: 'Delayed' },
-      { id: '3', title: 'Bus Route C', description: 'Route from City C to City D', status: 'Available' },
-      { id: '4', title: 'Train Route D', description: 'Route from City Y to City Z', status: 'Not Operational' },
-    ];
-    setItems(mockItems);
+    fetch('https://dummyjson.com/c/0fb8-3555-45e6-9a57') // Replace with your API endpoint
+      .then(response => response.json())
+      .then(data => {
+        setBuses(data);
+        setFilteredBuses(data);  // Initially, show all buses
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-  // Handle item click to increase count
-  const handleItemClick = () => {
-    setClickCount(prevCount => prevCount + 1);
+  // Toggle bus selection for cart
+  const handleItemClick = (bus) => {
+    setSelectedBuses((prevSelectedBuses) => {
+      const isBusSelected = prevSelectedBuses.some(item => item.id === bus.id);
+      if (isBusSelected) {
+        return prevSelectedBuses.filter(item => item.id !== bus.id);
+      } else {
+        return [...prevSelectedBuses, bus];
+      }
+    });
+  };
+
+  // Filter buses based on location and destination
+  const handleFilter = () => {
+    if (currentLocation && destination) {
+      const filtered = buses.filter(bus =>
+        bus.route.toLowerCase().includes(currentLocation.toLowerCase()) &&
+        bus.route.toLowerCase().includes(destination.toLowerCase())
+      );
+      setFilteredBuses(filtered);
+    } else {
+      setFilteredBuses(buses);  // If no filter, show all buses
+    }
+  };
+
+  // Navigate to Cart screen with selected buses
+  const handleCartPress = () => {
+    navigation.navigate('Cart', { selectedBuses, setSelectedBuses }); // Pass selectedBuses and setSelectedBuses
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome, {username}!</Text>
+      <Text style={styles.header}>Welcome, {username}</Text>
 
-      {/* List of transportation items */}
+      {/* Location and Destination Inputs */}
+      <View style={styles.filterContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Current Location"
+          value={currentLocation}
+          onChangeText={setCurrentLocation}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Destination"
+          value={destination}
+          onChangeText={setDestination}
+        />
+        <View style={styles.buttonContainer}>
+          <Button style={styles.buttons} title="Filter Buses" onPress={handleFilter} />
+          <Button style={styles.buttons} title="View Cart" onPress={handleCartPress} />
+        </View>
+      </View>
+
+      {/* Display filtered bus list */}
       <FlatList
-        data={items}
-        keyExtractor={item => item.id}
+        data={filteredBuses}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={handleItemClick}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.description}>{item.description}</Text>
-            <Text style={[styles.status, item.status === 'Available' ? styles.available : styles.unavailable]}>
-              {item.status}
-            </Text>
+          <TouchableOpacity style={styles.card} onPress={() => handleItemClick(item)}>
+            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+            <View style={styles.info}>
+              <Text style={styles.title}>{item.busName}</Text>
+              <Text>{item.route}</Text>
+              <Text>Available Seats: {item.availableSeats}</Text>
+              <Text>{item.description}</Text>
+              <Text
+  style={[
+    styles.selectionStatus,
+    { color: selectedBuses.some(bus => bus.id === item.id) ? 'green' : 'blue' }
+  ]}
+>
+  {selectedBuses.some(bus => bus.id === item.id) ? 'Selected' : 'Not Selected'}
+</Text>
+
+            </View>
           </TouchableOpacity>
         )}
       />
 
-      {/* Floating action button */}
-      <TouchableOpacity style={styles.floatingButton} onPress={() => alert(`You clicked ${clickCount} items.`)}>
-        <Text style={styles.floatingText}>{clickCount}</Text>
+      {/* Selected buses count display */}
+      <TouchableOpacity style={styles.floatingButton} onPress={handleCartPress}>
+        <Text style={styles.floatingButtonText}>{selectedBuses.length}</Text>
+        <Text style={styles.floatingButtonLabel}>Selected</Text>
       </TouchableOpacity>
-
-      {/* Button to go back to Login Screen */}
-      <Button title="Log Out" onPress={() => navigation.navigate('Login')} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-    padding: 10,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 14,
-    color: '#555',
-    marginVertical: 5,
-  },
-  status: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  available: {
-    color: 'green',
-  },
-  unavailable: {
-    color: 'red',
+  container: { flex: 1, padding: 16 },
+  header: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
+  filterContainer: { marginBottom: 20 },
+  input: { height: 40, borderColor: '#ccc', borderWidth: 1, marginBottom: 10, paddingLeft: 8, borderRadius: 4 },
+  card: { flexDirection: 'row', marginBottom: 16, backgroundColor: '#fff', padding: 10, borderRadius: 8, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 4 },
+  image: { width: 80, height: 80, marginRight: 10 },
+  info: { flex: 1 },
+  title: { fontSize: 18, fontWeight: 'bold' },
+  selectionStatus: { fontSize: 12, color: 'gray', marginTop: 5 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  buttons: {
+    width: '25%', // Adjusted width for larger button size
+    height: 50, // Adjusted height for larger button size
+    backgroundColor: '#ff3b30',
+    borderRadius: 8,
+    paddingHorizontal: 10, // Adjust padding to make button look more spacious
   },
   floatingButton: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#007BFF',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
+    backgroundColor: '#ff3b30',
+    borderRadius: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    elevation: 5,
+    justifyContent: 'center'
   },
-  floatingText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  floatingButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  floatingButtonLabel: { color: '#fff', fontSize: 12 }
 });
 
 export default HomeScreen;
