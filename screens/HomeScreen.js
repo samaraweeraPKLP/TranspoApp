@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 
 const HomeScreen = ({ route, navigation }) => {
   const { username = 'Guest' } = route.params || {}; // Provide default 'Guest' if no username is passed
@@ -14,12 +14,11 @@ const HomeScreen = ({ route, navigation }) => {
       .then(response => response.json())
       .then(data => {
         setBuses(data);
-        setFilteredBuses(data);  // Initially, show all buses
+        setFilteredBuses(data); // Initially, show all buses
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-  // Toggle bus selection for cart
   const handleItemClick = (bus) => {
     setSelectedBuses((prevSelectedBuses) => {
       const isBusSelected = prevSelectedBuses.some(item => item.id === bus.id);
@@ -31,7 +30,6 @@ const HomeScreen = ({ route, navigation }) => {
     });
   };
 
-  // Filter buses based on location and destination
   const handleFilter = () => {
     if (currentLocation && destination) {
       const filtered = buses.filter(bus =>
@@ -40,18 +38,20 @@ const HomeScreen = ({ route, navigation }) => {
       );
       setFilteredBuses(filtered);
     } else {
-      setFilteredBuses(buses);  // If no filter, show all buses
+      setFilteredBuses(buses); // If no filter, show all buses
     }
   };
 
-  // Navigate to Cart screen with selected buses
   const handleCartPress = () => {
     navigation.navigate('Cart', { selectedBuses, setSelectedBuses }); // Pass selectedBuses and setSelectedBuses
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome, {username}</Text>
+      <Text style={styles.header}>
+  Welcome, <Text style={styles.username}>{username}</Text>
+</Text>
+
 
       {/* Location and Destination Inputs */}
       <View style={styles.filterContainer}>
@@ -68,8 +68,12 @@ const HomeScreen = ({ route, navigation }) => {
           onChangeText={setDestination}
         />
         <View style={styles.buttonContainer}>
-          <Button style={styles.buttons} title="Filter Buses" onPress={handleFilter} />
-          <Button style={styles.buttons} title="View Cart" onPress={handleCartPress} />
+          <TouchableOpacity style={styles.customButton} onPress={handleFilter}>
+            <Text style={styles.buttonText}>Filter Buses</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.customButton} onPress={handleCartPress}>
+            <Text style={styles.buttonText}>View Cart</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -86,14 +90,13 @@ const HomeScreen = ({ route, navigation }) => {
               <Text>Available Seats: {item.availableSeats}</Text>
               <Text>{item.description}</Text>
               <Text
-  style={[
-    styles.selectionStatus,
-    { color: selectedBuses.some(bus => bus.id === item.id) ? 'green' : 'blue' }
-  ]}
->
-  {selectedBuses.some(bus => bus.id === item.id) ? 'Selected' : 'Not Selected'}
-</Text>
-
+                style={[
+                  styles.selectionStatus,
+                  { color: selectedBuses.some(bus => bus.id === item.id) ? 'green' : 'blue' }
+                ]}
+              >
+                {selectedBuses.some(bus => bus.id === item.id) ? 'Selected' : 'Not Selected'}
+              </Text>
             </View>
           </TouchableOpacity>
         )}
@@ -109,36 +112,60 @@ const HomeScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
+  container: { flex: 1, padding: 16, backgroundColor: '#d6d6d6' },
   header: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
+  username: { color: '#6b6c6e', fontWeight: 'bold' },
   filterContainer: { marginBottom: 20 },
-  input: { height: 40, borderColor: '#ccc', borderWidth: 1, marginBottom: 10, paddingLeft: 8, borderRadius: 4 },
-  card: { flexDirection: 'row', marginBottom: 16, backgroundColor: '#fff', padding: 10, borderRadius: 8, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 4 },
+  input: {
+    fontSize: 15,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#999797',
+    padding: 10,
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  customButton: {
+    backgroundColor: '#6b6c6e',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    width: '45%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 8,
+  },
+  buttonText: { color: '#fff', fontWeight: 'bold',fontSize: 16 },
+  card: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#999797',
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   image: { width: 80, height: 80, marginRight: 10 },
   info: { flex: 1 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  selectionStatus: { fontSize: 12, color: 'gray', marginTop: 5 },
-  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-  buttons: {
-    width: '25%', // Adjusted width for larger button size
-    height: 50, // Adjusted height for larger button size
-    backgroundColor: '#ff3b30',
-    borderRadius: 8,
-    paddingHorizontal: 10, // Adjust padding to make button look more spacious
-  },
+  selectionStatus: { fontSize: 12, marginTop: 5 },
   floatingButton: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#ff3b30',
-    borderRadius: 50,
+    backgroundColor: '#0bded3',
+    borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   floatingButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  floatingButtonLabel: { color: '#fff', fontSize: 12 }
+  floatingButtonLabel: { color: '#fff', fontSize: 12 ,fontWeight: 'bold'},
 });
 
 export default HomeScreen;
