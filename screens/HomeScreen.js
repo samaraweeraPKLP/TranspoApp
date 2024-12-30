@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, TextInput, ImageBackground } from 'react-native';
 
 const HomeScreen = ({ route, navigation }) => {
-  const { username = 'Guest' } = route.params || {}; // Provide default 'Guest' if no username is passed
+  const { username = 'Guest' } = route.params || {};
   const [buses, setBuses] = useState([]);
   const [filteredBuses, setFilteredBuses] = useState([]);
   const [selectedBuses, setSelectedBuses] = useState([]);
@@ -10,11 +10,11 @@ const HomeScreen = ({ route, navigation }) => {
   const [destination, setDestination] = useState('');
 
   useEffect(() => {
-    fetch('https://dummyjson.com/c/0fb8-3555-45e6-9a57') // Replace with your API endpoint
+    fetch('https://dummyjson.com/c/c2eb-9da4-4128-90a9')
       .then(response => response.json())
       .then(data => {
         setBuses(data);
-        setFilteredBuses(data); // Initially, show all buses
+        setFilteredBuses(data);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -38,83 +38,88 @@ const HomeScreen = ({ route, navigation }) => {
       );
       setFilteredBuses(filtered);
     } else {
-      setFilteredBuses(buses); // If no filter, show all buses
+      setFilteredBuses(buses);
     }
   };
 
   const handleCartPress = () => {
-    navigation.navigate('Cart', { selectedBuses, setSelectedBuses }); // Pass selectedBuses and setSelectedBuses
+    navigation.navigate('Cart', { selectedBuses, setSelectedBuses });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-  Welcome, <Text style={styles.username}>{username}</Text>
-</Text>
+    <ImageBackground
+      source={require('../assets/background.png')}
+      style={styles.background}
+    >
+      <View style={styles.container}>
+        <Text style={styles.header}>
+          Welcome, <Text style={styles.username}>{username}</Text>
+        </Text>
 
-
-      {/* Location and Destination Inputs */}
-      <View style={styles.filterContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Current Location"
-          value={currentLocation}
-          onChangeText={setCurrentLocation}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Destination"
-          value={destination}
-          onChangeText={setDestination}
-        />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.customButton} onPress={handleFilter}>
-            <Text style={styles.buttonText}>Filter Buses</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.customButton} onPress={handleCartPress}>
-            <Text style={styles.buttonText}>View Cart</Text>
-          </TouchableOpacity>
+        <View style={styles.filterContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Current Location"
+            value={currentLocation}
+            onChangeText={setCurrentLocation}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Destination"
+            value={destination}
+            onChangeText={setDestination}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.customButton} onPress={handleFilter}>
+              <Text style={styles.buttonText}>Filter Buses</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.customButton} onPress={handleCartPress}>
+              <Text style={styles.buttonText}>View Cart</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        <FlatList
+          data={filteredBuses}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.card} onPress={() => handleItemClick(item)}>
+              <Image source={{ uri: item.imageUrl }} style={styles.image} />
+              <View style={styles.info}>
+                <Text style={styles.title}>{item.busName}</Text>
+                <Text>{item.route}</Text>
+                <Text>Available Seats: {item.availableSeats}</Text>
+                <Text>{item.description}</Text>
+                <Text
+                  style={[
+                    styles.selectionStatus,
+                    { color: selectedBuses.some(bus => bus.id === item.id) ? 'green' : 'blue' }
+                  ]}
+                >
+                  {selectedBuses.some(bus => bus.id === item.id) ? 'Selected' : 'Not Selected'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        <TouchableOpacity style={styles.floatingButton} onPress={handleCartPress}>
+          <Text style={styles.floatingButtonText}>{selectedBuses.length}</Text>
+          <Text style={styles.floatingButtonLabel}>Selected</Text>
+        </TouchableOpacity>
       </View>
-
-      {/* Display filtered bus list */}
-      <FlatList
-        data={filteredBuses}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => handleItemClick(item)}>
-            <Image source={{ uri: item.imageUrl }} style={styles.image} />
-            <View style={styles.info}>
-              <Text style={styles.title}>{item.busName}</Text>
-              <Text>{item.route}</Text>
-              <Text>Available Seats: {item.availableSeats}</Text>
-              <Text>{item.description}</Text>
-              <Text
-                style={[
-                  styles.selectionStatus,
-                  { color: selectedBuses.some(bus => bus.id === item.id) ? 'green' : 'blue' }
-                ]}
-              >
-                {selectedBuses.some(bus => bus.id === item.id) ? 'Selected' : 'Not Selected'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Selected buses count display */}
-      <TouchableOpacity style={styles.floatingButton} onPress={handleCartPress}>
-        <Text style={styles.floatingButtonText}>{selectedBuses.length}</Text>
-        <Text style={styles.floatingButtonLabel}>Selected</Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#d6d6d6' },
-  header: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
-  username: { color: '#6b6c6e', fontWeight: 'bold' },
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
+  container: { flex: 1, padding: 16 },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  username: { color: '#00bcbf', fontWeight: 'bold' },
   filterContainer: { marginBottom: 20 },
   input: {
     fontSize: 15,
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
-  buttonText: { color: '#fff', fontWeight: 'bold',fontSize: 16 },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   card: {
     flexDirection: 'row',
     marginBottom: 16,
@@ -152,12 +157,14 @@ const styles = StyleSheet.create({
   image: { width: 80, height: 80, marginRight: 10 },
   info: { flex: 1 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  selectionStatus: { fontSize: 12, marginTop: 5 },
+  selectionStatus: { fontSize: 13, marginTop: 5, fontWeight: 'bold' },
   floatingButton: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#0bded3',
+    backgroundColor: '#00bcbf',
+    borderWidth: 2,
+    borderColor: '#6b6c6e',
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -165,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   floatingButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  floatingButtonLabel: { color: '#fff', fontSize: 12 ,fontWeight: 'bold'},
+  floatingButtonLabel: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
 });
 
 export default HomeScreen;

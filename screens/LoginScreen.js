@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity ,Image} from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -11,8 +11,6 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    // Here, you would normally check credentials against a backend API
-    // For now, we're just passing the username to the Home screen
     navigation.navigate('Home', { username });
   };
 
@@ -20,19 +18,19 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../assets/Travel App or Website Logo.png')}  // Adjust the path to your logo
+          source={require('../assets/Travel App or Website Logo.png')}
           style={styles.logo}
         />
       </View>
-      
-      
+
+
       <TextInput
         style={styles.input}
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -41,10 +39,10 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
       />
 
-<TouchableOpacity style={styles.button} onPress={handleLogin}>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      
+
       <Text
         style={styles.link}
         onPress={() => navigation.navigate('Register')}
@@ -58,7 +56,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',  // Vertically center content
+    justifyContent: 'center',
     padding: 20,
     backgroundColor: '#0bded3',
   },
@@ -70,16 +68,16 @@ const styles = StyleSheet.create({
     marginBottom: '25%',
   },
   logoContainer: {
-    alignItems: 'center',  // Horizontally center the logo
-    marginBottom: 30,  // Space between logo and inputs
+    alignItems: 'center',
+    marginBottom: 30,
   },
   logo: {
-    width: 250,  // Set the width of the logo
-    height: 250, // Set the height of the logo
+    width: 250,
+    height: 250,
   },
   input: {
     fontSize: 15,
-    backgroundColor:'#F5F5F5',
+    backgroundColor: '#F5F5F5',
     borderWidth: 2,
     borderColor: '#999797',
     padding: 10,
@@ -93,7 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#6b6c6e',  // Set your preferred button color
+    backgroundColor: '#6b6c6e',
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 10,
@@ -104,7 +102,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonText: {
-    color: '#F5F5F5',  // Text color
+    color: '#F5F5F5',
     fontSize: 18,
     fontWeight: 'bold',
   },

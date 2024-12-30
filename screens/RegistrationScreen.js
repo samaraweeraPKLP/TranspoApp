@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 
 const RegistrationScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -17,16 +17,15 @@ const RegistrationScreen = ({ navigation }) => {
       return;
     }
 
-    // Simulate successful registration
     Alert.alert('Success', 'Registration successful!');
-    navigation.navigate('Login');  // Redirect to the Login screen after successful registration
+    navigation.navigate('Login');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../assets/Travel App or Website Logo.png')}  // Adjust the path to your logo
+          source={require('../assets/Travel App or Website Logo.png')}
           style={styles.logo}
         />
       </View>
@@ -57,7 +56,7 @@ const RegistrationScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
-      
+
       <Text
         style={styles.link}
         onPress={() => navigation.navigate('Login')}
@@ -76,23 +75,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#0bded3',
   },
   logoContainer: {
-    alignItems: 'center',  // Horizontally center the logo
-    marginBottom: 25,  // Space between logo and inputs
+    alignItems: 'center',
+    marginBottom: 25,
   },
   logo: {
-    width: 200,  // Set the width of the logo
-    height: 200, // Set the height of the logo
+    width: 200,
+    height: 200,
   },
 
   title: {
     fontSize: 18,
     fontWeight: '500',
     marginBottom: 10,
-    marginLeft:5,
+    marginLeft: 5,
   },
   input: {
     fontSize: 15,
-    backgroundColor:'#F5F5F5',
+    backgroundColor: '#F5F5F5',
     borderWidth: 2,
     borderColor: '#999797',
     padding: 10,
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   button: {
-    backgroundColor: '#6b6c6e',  // Set your preferred button color
+    backgroundColor: '#6b6c6e',
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 10,
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonText: {
-    color: '#F5F5F5',  // Text color
+    color: '#F5F5F5',
     fontSize: 18,
     fontWeight: 'bold',
   },

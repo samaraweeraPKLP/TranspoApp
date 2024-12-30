@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
 const BookingScreen = ({ route, navigation }) => {
   const { bus } = route.params;
@@ -7,7 +7,6 @@ const BookingScreen = ({ route, navigation }) => {
   const [selectedSeats, setSelectedSeats] = useState('');
   const [error, setError] = useState('');
 
-  // Calculate total cost
   const calculateTotalCost = () => {
     return selectedSeats * bus.price;
   };
@@ -17,7 +16,7 @@ const BookingScreen = ({ route, navigation }) => {
       alert('Please enter your name!');
       return;
     }
-    
+
     const totalCost = calculateTotalCost();
     alert(`Booking successful!\n${passengerName} has booked ${selectedSeats} seat(s)\nTotal cost: $${totalCost}`);
     navigation.goBack();
@@ -38,54 +37,59 @@ const BookingScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Booking Details</Text>
+    <ImageBackground
+      source={require('../assets/background.png')}
+      style={styles.background}
+    >
+      <View style={styles.container}>
+        <Text style={styles.header}>Booking Details</Text>
 
-      <Text style={styles.busDetail}>Bus Name: {bus.busName}</Text>
-      <Text style={styles.busDetail}>Route: {bus.route}</Text>
-      <Text style={styles.busDetail}>Available Seats: {bus.availableSeats}</Text>
-      <Text style={styles.busDetail}>Price per Seat: Rs.{bus.price}</Text>
+        <Text style={styles.busDetail}>Bus Name: {bus.busName}</Text>
+        <Text style={styles.busDetail}>Route: {bus.route}</Text>
+        <Text style={styles.busDetail}>Available Seats: {bus.availableSeats}</Text>
+        <Text style={styles.busDetail}>Price per Seat: Rs.{bus.price}</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your name"
-        value={passengerName}
-        onChangeText={setPassengerName}
-      />
-
-      <View style={styles.seatSelection}>
-        <Text style={styles.busDetail}>Select Seats: </Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter seats count"
-          keyboardType="numeric"
-          value={String(selectedSeats)}
-          onChangeText={handleSeatChange}
+          placeholder="Enter your name"
+          value={passengerName}
+          onChangeText={setPassengerName}
         />
+
+        <View style={styles.seatSelection}>
+          <Text style={styles.busDetail}>Select Seats: </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter seats count"
+            keyboardType="numeric"
+            value={String(selectedSeats)}
+            onChangeText={handleSeatChange}
+          />
+        </View>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <Text style={styles.totalCost}>Total Cost: Rs.{calculateTotalCost()}</Text>
+
+        <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
+          <Text style={styles.bookButtonText}>Confirm Booking</Text>
+        </TouchableOpacity>
       </View>
-
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-      <Text style={styles.totalCost}>Total Cost: Rs.{calculateTotalCost()}</Text>
-
-      <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
-        <Text style={styles.bookButtonText}>Confirm Booking</Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#d6d6d6'
+    resizeMode: 'cover',
   },
+  container: { flex: 1, padding: 16 },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    marginTop:20,
+    marginTop: 20,
   },
   busDetail: {
     fontSize: 18,
